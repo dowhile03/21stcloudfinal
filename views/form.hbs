@@ -1,0 +1,35 @@
+<form method="post" action="/sendata2">
+  <div class="mb-3">
+    <label for="customerInformation" class="form-label">Customer Information</label>
+    <input type="text" class="form-control" id="customerInformation" aria-describedby="customerInformation" name="customerInformation" required>
+  </div>
+  <div class="mb-3">
+    <label for="nameOfCompany" class="form-label">Name of the company</label>
+    <input type="text" class="form-control" id="nameOfCompany" aria-describedby="emailHelp" name="nameOfCompany">
+  </div>
+    <div class="mb-3">
+    <label for="employeesNumber" class="form-label">Number of employees</label>
+    <input type="number" class="form-control" id="employeesNumber" name="employeesNumber" aria-describedby="emailHelp">
+  </div>
+    <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+  </div>
+   <div class="mb-3">
+    <label for="contactNumber" class="form-label">Contact Number</label>
+    <input type="number" class="form-control" id="contactNumber" name="contactNumber" aria-describedby="emailHelp">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Do you have any Data migration needs? Please provide details:</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="dataMigration"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">>Do you have any compute migration needs? Please provide details:</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="computeMigration"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Do you have any business application migration needs? Please provide details:</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="buisnessApplication"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
