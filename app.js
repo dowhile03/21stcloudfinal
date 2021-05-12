@@ -37,8 +37,8 @@ app.post("/pay", (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "http://21stcloud.com/success",
-      cancel_url: "http://21stcloud.com/cancel",
+      return_url: "https://teamdowhile-cloud.herokuapp.com/success",
+      cancel_url: "https://teamdowhile-cloud.herokuapp.com/cancel",
     },
     transactions: [
       {
