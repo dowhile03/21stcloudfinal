@@ -20,8 +20,6 @@ app.use(
   })
 );
 
-
-
 paypal.configure({
   mode: "live", //sandbox or live
   client_id:
@@ -190,3 +188,5 @@ app.post("/pay2", (req, res) => {
 
 app.use("/", index);
 app.listen(port);
+
+
