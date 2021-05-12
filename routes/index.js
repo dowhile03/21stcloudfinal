@@ -27,8 +27,14 @@ router.get('/services',(req,res) => {
     path : '/services'})
 })
 
-router.post('/submitdata1',dataController.sendData1)
-router.post('/submitdata2',dataController.sendData2)
+router.post('/payment1',dataController.sendData1)
+router.get('/payment1',(req,res) => {
+    res.render('payment1');
+})
+router.post('/payment2',dataController.sendData2)
+router.get('/payment2',(req,res) => {
+    res.render('payment2');
+})
 router.get('*',(req,res) => {
     res.status(404).render('error404',{
         title : 'Error 404'

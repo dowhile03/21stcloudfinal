@@ -27,9 +27,7 @@ exports.sendData1 =  (req,res) => {
                 res.render('manageerrors');
             })
             .then(
-                res.render('payment1',{
-                    title: 'Payment Gateway'
-                })
+                res.redirect('/payment1')
             )
             .catch((err) => {
                 res.render('manageerrors')
@@ -58,9 +56,7 @@ exports.sendData2 = (req, res) => {
                 console.log("data added successfully")
             })
             .then(
-                res.render('payment2',{
-                    title: 'Payment Gateway'
-                })
+               res.redirect('/payment2')
             )
             .catch((err) => {console.log(err)})
     
