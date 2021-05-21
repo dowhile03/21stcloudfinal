@@ -1,10 +1,23 @@
-  <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-     <div class="feature col  mx-auto">
-        <h2>Payment</h2>
-        <p>Thank you for Choosing Partnership Initiation with 21st Cloud. Complete the payment below for the further process </p>
-      <form action="/pay" method="POST">
-<button class="btn btn-primary">Pay Now</button>
-</form>
-      </div>
-    </div>
+<div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+  <div class="feature col mx-auto">
+    <h2>Payment</h2>
+    <p>Thank you for Choosing Partnership Initiation with 21st Cloud. Complete
+      the payment below for the further process
+    </p>
+    <form action="/pay" method="POST">
 
+      <script
+        src="//checkout.stripe.com/v2/checkout.js"
+        class="stripe-button"
+        data-key= "{{key}}"
+        data-amount="70"
+        data-currency="INR"
+        data-name="21stcoud"
+        data-description="Partnership Initialtion Call"
+        data-locale="auto"
+      >
+
+      </script>
+    </form>
+  </div>
+</div>

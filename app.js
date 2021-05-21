@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const bodyparser = require('body-parser')   
 const path = require("path");
 dotenv.config({
   path: "./.env",
@@ -8,7 +9,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 const exphbs = require("express-handlebars");
 const index = require("./routes/index");
-const paypal = require("paypal-rest-sdk");
+
+
+ const PUBLISHABLE_KEY = "pk_test_51HVx9ZGhHrWNdBHOxLcKuR39ApxdTx3ZP6JUEazZZ7SAJaXUvx1o4YsmBpb2PlWSJWnXVS48GRV2UAPVjs6l4R7o00WrtUNumL"
+const SECRET_KEY = "sk_test_51HVx9ZGhHrWNdBHOq8vtsvM0gXu4omgWgbmjCr8iexRvnlZ9WKAcqFyvrXda3upvfLGS2FIvCk8ohLzfToRmec5I00rcQIZclC"
+
+ const stripe = require('stripe')(SECRET_KEY) 
+
+
+ 
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
@@ -20,170 +29,93 @@ app.use(
   })
 );
 
-paypal.configure({
-  mode: "live", //sandbox or live
-  client_id:
-   process.env.CLIENT_ID,
-  client_secret:
-    process.env.CLIENT_SECRET,
-});
-
-app.post("/pay", (req, res) => {
-  const create_payment_json = {
-    intent: "sale",
-    payer: {
-      payment_method: "paypal",
-    },
-    redirect_urls: {
-      return_url: "https://teamdowhile-cloud.herokuapp.com/success",
-      cancel_url: "https://teamdowhile-cloud.herokuapp.com/cancel",
-    },
-    transactions: [
-      {
-        item_list: {
-          items: [
-            {
-              name: "Partnership Initiation call",
-              sku: "Partnership Initiation call",
-              price: "1.00",
-              currency: "USD",
-              quantity: 1,
-            },
-          ],
-        },
-        amount: {
-          currency: "USD",
-          total: "1.00",
-        },
-        description: "Partnership Initiation Call",
-      },
-    ],
-  };
-
-  paypal.payment.create(create_payment_json, function (error, payment) {
-    if (error) {
-      throw error;
-    } else {
-      for (let i = 0; i < payment.links.length; i++) {
-        if (payment.links[i].rel === "approval_url") {
-          res.redirect(payment.links[i].href);
-        }
-      }
-    }
+app.get('/payment1',(req,res) => {
+  res.render('payment1',{
+      key:PUBLISHABLE_KEY
   });
-});
-
-app.get("/success", (req, res) => {
-  const payerId = req.query.PayerID;
-  const paymentId = req.query.paymentId;
-
-  const execute_payment_json = {
-    payer_id: payerId,
-    transactions: [
-      {
-        amount: {
-          currency: "USD",
-          total: "1.00",
-        },
-      },
-    ],
-  };
-
-  paypal.payment.execute(
-    paymentId,
-    execute_payment_json,
-    function (error, payment) {
-      if (error) {
-        console.log(error.response);
-        throw error;
-      } else {
-        console.log(JSON.stringify(payment));
-        res.render('success');
-      }
-    }
-  );
-});
-
-app.get("/cancel", (req, res) => res.send("Cancelled"));
+})
 
 
-app.post("/pay2", (req, res) => {
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://21stcloud.com/success2",
-        cancel_url: "http://21stcloud.com/cancel2",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: [
-              {
-                name: "Partnership deep drive",
-                sku: "Partnership deep drive",
-                price: "2.00",
-                currency: "USD",
-                quantity: 1,
-              },
-            ],
-          },
-          amount: {
-            currency: "USD",
-            total: "2.00",
-          },
-          description: "Partnership Deep drive",
-        },
-      ],
-    };
-  
-    paypal.payment.create(create_payment_json, function (error, payment) {
-      if (error) {
-        throw error;
-      } else {
-        for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === "approval_url") {
-            res.redirect(payment.links[i].href);
-          }
-        }
-      }
-    });
+
+
+app.post('/pay', function(req, res){ 
+
+  // Moreover you can take more details from user 
+  // like Address, Name, etc from form 
+  stripe.customers.create({ 
+      email: req.body.stripeEmail, 
+      source: req.body.stripeToken, 
+      name: '21stcloud', 
+      address: { 
+          line1: 'Old MES colony', 
+          postal_code: '95074', 
+          city: 'New Delhi', 
+          state: 'Delhi', 
+          country: 'US', 
+      } 
+  }) 
+  .then((customer) => { 
+
+      return stripe.charges.create({ 
+          amount: 70,    
+          description: 'Partnership initiation call', 
+          currency: 'INR', 
+          customer: customer.id 
+      }); 
+  }) 
+  .then((charge) => { 
+      res.render('success',{
+        title:"payment Successful"
+      }); 
+  }) 
+  .catch((err) => { 
+      res.send(err)  
+      console.log(err);  
+  }); 
+})
+
+app.get('/payment2',(req,res) => {
+  res.render('payment2',{
+    key2:PUBLISHABLE_KEY
   });
+})
 
-  app.get("/success2", (req, res) => {
-    const payerId = req.query.PayerID;
-    const paymentId = req.query.paymentId;
-  
-    const execute_payment_json = {
-      payer_id: payerId,
-      transactions: [
-        {
-          amount: {
-            currency: "USD",
-            total: "2.00",
-          },
-        },
-      ],
-    };
-  
-    paypal.payment.execute(
-      paymentId,
-      execute_payment_json,
-      function (error, payment) {
-        if (error) {
-          console.log(error.response);
-          throw error;
-        } else {
-          console.log(JSON.stringify(payment));
-          res.render('success2');
-        }
-      }
-    );
-  });
-  
-  app.get("/cancel2", (req, res) => res.send("Cancelled"));
+app.post('/pay2', function(req, res){ 
+
+  // Moreover you can take more details from user 
+  // like Address, Name, etc from form 
+  stripe.customers.create({ 
+      email: req.body.stripeEmail, 
+      source: req.body.stripeToken, 
+      name: '21stcloud', 
+      address: { 
+          line1: 'Old MES colony', 
+          postal_code: '95074', 
+          city: 'New Delhi', 
+          state: 'Delhi', 
+          country: 'US', 
+      } 
+  }) 
+  .then((customer) => { 
+
+      return stripe.charges.create({ 
+          amount: 70,    
+          description: 'Partnership Deep drive', 
+          currency: 'INR', 
+          customer: customer.id 
+      }); 
+  }) 
+  .then((charge) => { 
+      res.render('success2',{
+        title:"payment Successful"
+      }); 
+  }) 
+  .catch((err) => { 
+      res.send(err)  
+      console.log(err);  
+  }); 
+})
+
 
 
 app.use("/", index);
